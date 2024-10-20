@@ -1,11 +1,22 @@
-from fastapi import FastAPI
+# app.py
+from fastapi import FastAPI, File, UploadFile
+from PyPDF2 import PdfReader
+from io import BytesIO
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"message": "Hello, FastAPI!"}
+@app.post("/model/predict")
+async def resume_screening(file: UploadFile = File(...)):
+    if file.content_type != "application/pdf":
+        return {"error": "File is not a PDF"}
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str = None):
-    return {"item_id": item_id, "query": q}
+    pdf_reader = PdfReader(BytesIO(await file.read()))
+    text = ""
+
+    for page_num in range(len(pdf_reader.pages)):
+        page = pdf_reader.pages[page_num]
+        text += page.extract_text()
+    
+    print(text)
+
+    return {"text": text}
