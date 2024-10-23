@@ -9,7 +9,7 @@ const HeroSection = () => {
     >
       {/* Background Image */}
       <div 
-        className="absolute inset-0 bg-no-repeat bg-cover bg-center"
+        className="absolute inset-0 bg-no-repeat bg-cover bg-center lg:scale-100 "
         style={{ backgroundImage: `url(${heroImage})` }}
       />
       
@@ -20,7 +20,7 @@ const HeroSection = () => {
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 h-full">
         <div className="flex flex-col justify-center h-[calc(100vh-64px)] sm:h-[calc(100vh-80px)] max-w-xl">
           {/* Text Content */}
-          <div className="space-y-6 sm:space-y-8">
+          <div className="space-y-6 sm:space-y-8 md:px-32 self-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
               ResuMatch
             </h1>
@@ -31,7 +31,7 @@ const HeroSection = () => {
 
             {/* CTA Button */}
             <div className="pt-2 sm:pt-4">
-              <Link to='/submit-resume'>
+              <Link to='/screen'>
                 <button className="px-6 py-3 sm:px-8 sm:py-4 text-sm sm:text-base text-white 
                   border border-white hover:bg-white/20 transition-colors duration-300 
                   rounded-md shadow-lg hover:shadow-xl">
@@ -46,4 +46,4 @@ const HeroSection = () => {
   );
 }
 
-export default HeroSection
+export default HeroSection  
