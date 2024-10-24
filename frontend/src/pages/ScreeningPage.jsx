@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import FileIcon from '../images/fileIcon.png';
 import SideInfo from '../components/Screener/SideInfo';
+import FileUpload from '../components/Screener/FileUpload'; // Import the new FileUpload component
 
 function ScreeningPage() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -50,15 +51,13 @@ function ScreeningPage() {
           </div>
         </div>
         
-        {/* Display selected files */}
+        {/* Display selected files with progress bars */}
         {selectedFiles.length > 0 && (
           <div className='p-4 text-black'>
-            <h2 className='text-lg'>Selected PDF Files:</h2>
-            <ul>
-              {selectedFiles.map((file, index) => (
-                <li key={index}>{file.name}</li>
-              ))}
-            </ul>
+            <h2 className='text-2xl mb-4 flex justify-center items-center '>Uploaded Files:</h2>
+            {selectedFiles.map((file, index) => (
+              <FileUpload key={index} file={file} />
+            ))}
           </div>
         )}
         
