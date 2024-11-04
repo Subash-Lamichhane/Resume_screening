@@ -17,7 +17,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# app = FastAPI()
 
 @app.post("/model/predict")
 async def resume_screening(files: list[UploadFile] = File(...)):
