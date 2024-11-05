@@ -3,7 +3,20 @@ from fastapi import FastAPI, File, UploadFile
 from PyPDF2 import PdfReader
 from io import BytesIO
 from predict import predict
+
+
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Or use ["*"] to allow all origins (for testing only)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/model/predict")
 async def resume_screening(files: list[UploadFile] = File(...)):
