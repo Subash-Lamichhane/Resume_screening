@@ -10,6 +10,7 @@ function ScreeningPage() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [output, setOutput] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [requiredCategory, setRequiredCategory] = useState(''); // New state
   const [loading, setLoading] = useState(false);
 
   const handleCategorySelect = (category) => {
@@ -43,6 +44,7 @@ function ScreeningPage() {
       });
       const result = await response.json();
       setOutput(JSON.stringify(result, null, 2));
+      setRequiredCategory(selectedCategory); // Update required category only when screen button is pressed
     } catch (error) {
       setOutput('An error occurred while predicting categories.');
     } finally {
@@ -108,7 +110,7 @@ function ScreeningPage() {
           </button>
         </div>
 
-        {output && <PredictionResults output={output} required_category={selectedCategory}/>}
+        {output && <PredictionResults output={output} required_category={requiredCategory} />}
 
         <div className="flex justify-center pt-6">
           <SideInfo />

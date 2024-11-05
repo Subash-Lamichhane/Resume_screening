@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import DocImg from '../../images/pdfLogo.png'
+import DocImg from '../../images/pdfLogo.png';
 
 function FileUpload({ file }) {
     const [progress, setProgress] = useState(0);
@@ -12,34 +12,45 @@ function FileUpload({ file }) {
                         clearInterval(interval);
                         return 100;
                     }
-                    return prevProgress + 10; // Simulating progress increment by 10% every 500ms
+                    return prevProgress + 10;
                 });
             }, 500);
         };
 
-        simulateUpload(); // Start the simulated upload process
+        simulateUpload();
     }, []);
+
+    // Function to preview the file in a new tab
+    const handlePreview = () => {
+        const fileURL = URL.createObjectURL(file);
+        window.open(fileURL, '_blank');
+    };
 
     return (
         <div className='mb-4 flex items-center justify-center'>
-          <div className='flex space-x-2 w-full max-w-xl'> {/* Ensure full width but limit max size */}
-            <div>
-              <img src={DocImg} alt="Doc Img" className='w-8 h-8' />
+            <div className='flex space-x-2 w-full max-w-xl'>
+                <div>
+                    <img src={DocImg} alt="Document" className='w-8 h-8' />
+                </div>
+                <div className='flex-grow'>
+                    <div className='flex justify-between items-center space-x-4'>
+                        <span className='truncate flex-grow min-w-[100px]'>{file.name}</span>
+                        <span>{progress}%</span>
+                        {progress === 100 && (
+                            <button 
+                                onClick={handlePreview} 
+                                className='text-blue-500 underline hover:text-blue-700'>
+                                Preview
+                            </button>
+                        )}
+                    </div>
+                    <div className='w-full bg-gray-200 h-2 rounded'>
+                        <div className='bg-green-500 h-full rounded' style={{ width: `${progress}%` }}></div>
+                    </div>
+                </div>
             </div>
-            <div className='flex-grow'> {/* Allow this section to grow and occupy space */}
-              <div className='flex justify-between items-center space-x-4'>
-                {/* Add flex-grow and min-width to the filename */}
-                <span className='truncate flex-grow min-w-[100px]'>{file.name}</span> 
-                <span>{progress}%</span>
-              </div>
-              <div className='w-full bg-gray-200 h-2 rounded'>
-                <div className='bg-green-500 h-full rounded' style={{ width: `${progress}%` }}></div>
-              </div>
-            </div>
-          </div>
         </div>
-      );
-      
+    );
 }
 
 export default FileUpload;
