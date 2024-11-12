@@ -28,6 +28,8 @@ return (
 <div className="max-md:hidden md:block justify-end text-lg space-x-8">
   <Link to="/" className="cursor-pointer hover:text-gray-600">Home</Link>
   <Link to="/screen" className='cursor-pointer hover:text-gray-600'>Screen</Link>
+  <Link to="/based-on-job-description" className='cursor-pointer hover:text-gray-600'>Rank</Link>
+
   <Link to="/faq" className="cursor-pointer hover:text-gray-600">FAQ</Link>
 </div>
 
@@ -43,6 +45,8 @@ return (
         <div className='absolute top-8 right-0 w-full m-4 bg-primary p-4 shadow-lg z-20 md:hidden'>
           <Link to="/" className="block text-center py-2 text-sm text-gray-700" onClick={burgerClicked}>Home</Link>
           <Link to="/screen" className="block text-center py-2 text-sm text-gray-700" onClick={burgerClicked}>Screen</Link>
+          <Link to="/based-on-job-description" className="block text-center py-2 text-sm text-gray-700" onClick={burgerClicked}>Rank</Link>
+
           <Link to="/faq" className="block text-center py-2 text-sm text-gray-700" onClick={burgerClicked}>FAQ</Link>
         </div>
       )}
