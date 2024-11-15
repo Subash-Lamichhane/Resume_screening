@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import FileIcon from '../images/fileIcon.png';
 import PredictionResults from '../components/Screener/PredictionResults';
+import FileUpload from '../components/Screener/FileUpload'; 
+
 
 export default function RankPage() {
     const [jobTitle, setJobTitle] = useState('');
@@ -11,6 +13,11 @@ export default function RankPage() {
     const [skills, setSkills] = useState([]);
     const [experience, setExperience] = useState('');
     const [skillInput, setSkillInput] = useState('');
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        setSelectedFiles(files.filter(file => file.type === 'application/pdf')); 
+      };
 
     const handleSkillAdd = () => {
         if (skillInput && !skills.includes(skillInput)) {
@@ -68,6 +75,7 @@ export default function RankPage() {
                                 <option value="Bachelor">Bachelor</option>
                                 <option value="Master">Master</option>
                                 <option value="PhD">PhD</option>
+                                <option value="None">None</option>
                             </select>
                         </div>
                         {/* Major */}
@@ -138,9 +146,36 @@ export default function RankPage() {
                             placeholder="Enter required experience in years"
                         />
                     </div>
+                    
+                        <div className='bg-upload-inner h-full w-full border-2 border-dotted border-white rounded-xl flex items-center justify-center'>
+                            <div className='flex flex-col items-center space-y-3 p-4'>
+                                <img src={FileIcon} alt="fileicon" className='w-20' />
+                                <input
+                                    type="file"
+                                    id="fileUpload"
+                                    accept="application/pdf"
+                                    multiple
+                                    hidden
+                                    onChange={handleFileChange}
+                                />
+                                <label htmlFor="fileUpload" className='p-4 rounded-none bg-white font-bold uppercase cursor-pointer'>
+                                    Choose Files
+                                </label>
+                                <div className='text-white'>or drop files here</div>
+                            </div>
+                        </div>
+
+                    {selectedFiles.length > 0 && (
+                        <div className='p-4 text-black'>
+                            <h2 className='text-2xl mb-4 flex justify-center items-center '>Uploaded Files:</h2>
+                            {selectedFiles.map((file, index) => (
+                                <FileUpload key={index} file={file} />
+                            ))}
+                        </div>
+                    )}
 
                     {/* Submit Button */}
-                    <div className="flex justify-center">
+                    <div className="flex justify-center m-3">
                         <button
                             className="bg-green-500 text-white px-6 py-3 rounded-lg"
                             onClick={() => {
@@ -155,7 +190,7 @@ export default function RankPage() {
                                 });
                             }}
                         >
-                            Submit Job Description
+                            Rank Resume
                         </button>
                     </div>
                 </div>
