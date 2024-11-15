@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import FileIcon from '../images/fileIcon.png';
-import PredictionResults from '../components/Screener/PredictionResults';
 import FileUpload from '../components/Screener/FileUpload'; 
-
 
 export default function RankPage() {
     const [jobTitle, setJobTitle] = useState('');
@@ -14,10 +12,11 @@ export default function RankPage() {
     const [experience, setExperience] = useState('');
     const [skillInput, setSkillInput] = useState('');
     const [selectedFiles, setSelectedFiles] = useState([]);
+
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
-        setSelectedFiles(files.filter(file => file.type === 'application/pdf')); 
-      };
+        setSelectedFiles(files.filter(file => file.type === 'application/pdf'));
+    };
 
     const handleSkillAdd = () => {
         if (skillInput && !skills.includes(skillInput)) {
@@ -30,10 +29,44 @@ export default function RankPage() {
         setSkills(skills.filter(skill => skill !== skillToRemove));
     };
 
+    const handleSubmit = async () => {
+        const formData = new FormData();
+
+        // Append form fields to FormData
+        formData.append('jobTitle', jobTitle);
+        formData.append('jobDescription', jobDescription);
+        formData.append('degree', degree);
+        formData.append('major', major);
+        formData.append('experience', experience);
+
+        // Append skills as a JSON string (or as individual fields if preferred)
+        formData.append('skills', JSON.stringify(skills));
+
+        // Append files to FormData
+        selectedFiles.forEach((file) => {
+            formData.append('files', file);  // 'files' will be used in FastAPI to receive the file
+        });
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/upload_resume', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Server Response:', result);
+            } else {
+                console.error('Error with the request:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error submitting data:', error);
+        }
+    };
+
     return (
         <div>
             <Navbar />
-
             <div className='screen-container min-h-screen p-4 bg-gray-100'>
                 <div className='p-4 flex justify-center text-4xl mb-8 text-gray-800'>Job Description</div>
 
@@ -91,7 +124,6 @@ export default function RankPage() {
                         </div>
                     </div>
 
-
                     {/* Skills */}
                     <div className="mb-4">
                         <label className="block text-lg font-medium mb-2">Skills</label>
@@ -134,7 +166,6 @@ export default function RankPage() {
                         </div>
                     </div>
 
-
                     {/* Experience in Years */}
                     <div className="mb-4">
                         <label className="block text-lg font-medium mb-2">Experience (Years)</label>
@@ -146,24 +177,24 @@ export default function RankPage() {
                             placeholder="Enter required experience in years"
                         />
                     </div>
-                    
-                        <div className='bg-upload-inner h-full w-full border-2 border-dotted border-white rounded-xl flex items-center justify-center'>
-                            <div className='flex flex-col items-center space-y-3 p-4'>
-                                <img src={FileIcon} alt="fileicon" className='w-20' />
-                                <input
-                                    type="file"
-                                    id="fileUpload"
-                                    accept="application/pdf"
-                                    multiple
-                                    hidden
-                                    onChange={handleFileChange}
-                                />
-                                <label htmlFor="fileUpload" className='p-4 rounded-none bg-white font-bold uppercase cursor-pointer'>
-                                    Choose Files
-                                </label>
-                                <div className='text-white'>or drop files here</div>
-                            </div>
+
+                    <div className='bg-upload-inner h-full w-full border-2 border-dotted border-white rounded-xl flex items-center justify-center'>
+                        <div className='flex flex-col items-center space-y-3 p-4'>
+                            <img src={FileIcon} alt="fileicon" className='w-20' />
+                            <input
+                                type="file"
+                                id="fileUpload"
+                                accept="application/pdf"
+                                multiple
+                                hidden
+                                onChange={handleFileChange}
+                            />
+                            <label htmlFor="fileUpload" className='p-4 rounded-none bg-white font-bold uppercase cursor-pointer'>
+                                Choose Files
+                            </label>
+                            <div className='text-white'>or drop files here</div>
                         </div>
+                    </div>
 
                     {selectedFiles.length > 0 && (
                         <div className='p-4 text-black'>
@@ -178,17 +209,7 @@ export default function RankPage() {
                     <div className="flex justify-center m-3">
                         <button
                             className="bg-green-500 text-white px-6 py-3 rounded-lg"
-                            onClick={() => {
-                                // Handle submit logic here
-                                console.log({
-                                    jobTitle,
-                                    jobDescription,
-                                    degree,
-                                    major,
-                                    skills,
-                                    experience
-                                });
-                            }}
+                            onClick={handleSubmit}
                         >
                             Rank Resume
                         </button>
