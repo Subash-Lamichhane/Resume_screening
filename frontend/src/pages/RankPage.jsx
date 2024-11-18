@@ -12,6 +12,8 @@ export default function RankPage() {
     const [experience, setExperience] = useState('');
     const [skillInput, setSkillInput] = useState('');
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [results, setResults] = useState([]); // Store ranked results here
+    const [loading, setLoading] = useState(false); // Loading indicator
 
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
@@ -38,29 +40,31 @@ export default function RankPage() {
         formData.append('degree', degree);
         formData.append('major', major);
         formData.append('experience', experience);
-
-        // Append skills as a JSON string (or as individual fields if preferred)
         formData.append('skills', JSON.stringify(skills));
 
         // Append files to FormData
         selectedFiles.forEach((file) => {
-            formData.append('files', file);  // 'files' will be used in FastAPI to receive the file
+            formData.append('files', file);
         });
 
+        setLoading(true);
         try {
             const response = await fetch('http://127.0.0.1:8000/upload_resume', {
                 method: 'POST',
                 body: formData,
             });
-
+            // console.log(response)
             if (response.ok) {
                 const result = await response.json();
-                console.log('Server Response:', result);
+                console.log(result)
+                setResults(result.results || []); // Assuming `rankedResumes` is part of the API response
             } else {
                 console.error('Error with the request:', response.statusText);
             }
         } catch (error) {
             console.error('Error submitting data:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -211,10 +215,30 @@ export default function RankPage() {
                             className="bg-green-500 text-white px-6 py-3 rounded-lg"
                             onClick={handleSubmit}
                         >
-                            Rank Resume
+                            {loading ? 'Ranking...' : 'Rank Resume'}
                         </button>
                     </div>
                 </div>
+                {results && (
+                    <div className="results-section mt-6 bg-white shadow-lg p-6 rounded-lg max-w-xl mx-auto">
+                        <h2 className="text-2xl font-bold text-center mb-4">Resume Results</h2>
+                        <ul>
+                            {Object.entries(results).map(([fileName, fileData], index) => (
+                                <li
+                                    key={index}
+                                    className="border-b last:border-b-0 py-2"
+                                >
+                                    <strong>{fileName}</strong>
+                                    <div className="text-sm text-gray-700">
+                                        {fileData.error
+                                            ? <span className="text-red-500">Error: {fileData.error}</span>
+                                            : `Score: ${fileData.cosine_similarity_score}`}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
         </div>
     );

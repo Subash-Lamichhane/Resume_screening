@@ -32,7 +32,8 @@ async def resume_screening(files: list[UploadFile] = File(...)):
         for page_num in range(len(pdf_reader.pages)):
             page = pdf_reader.pages[page_num]
             text += page.extract_text()
-
+        # print("Length of text:", len(text.split()))
+            
         predicted_category, category_probabilities = predict(text)
         results[file.filename] = {
             "predicted_category": predicted_category,
