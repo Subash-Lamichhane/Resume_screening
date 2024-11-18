@@ -3,6 +3,9 @@ from typing import List
 import json
 import os
 from fastapi.responses import JSONResponse
+from test import get_cosine_similarity
+from PyPDF2 import PdfReader
+from io import BytesIO
 
 app = FastAPI()
 
@@ -28,11 +31,30 @@ async def upload_resume(
 
     # Process the files
     file_names = []
+    results = {}
+
     for file in files:
-        file_path = os.path.join(UPLOAD_FOLDER, file.filename)
-        with open(file_path, "wb") as f:
-            f.write(await file.read())
-        file_names.append(file.filename)
+        if file.content_type != "application/pdf":
+            results[file.filename] = {"error": "File is not a PDF"}
+            continue
+
+        # Read the file directly as bytes
+        file_bytes = await file.read()
+
+        # Use BytesIO for PyPDF2
+        try:
+            pdf_reader = PdfReader(BytesIO(file_bytes))
+            text = ""
+
+            for page_num in range(len(pdf_reader.pages)):
+                page = pdf_reader.pages[page_num]
+                text += page.extract_text()
+
+            # Compute cosine similarity
+            score = get_cosine_similarity(jobDescription, text)
+            results[file.filename] = {"cosine_similarity_score": float(score)}
+        except Exception as e:
+            results[file.filename] = {"error": str(e)}
 
     # Prepare the response
     response_data = {
@@ -42,7 +64,7 @@ async def upload_resume(
         "major": major,
         "experience": experience,
         "skills": skills_list,
-        "uploaded_files": file_names
+        "results": results,
     }
-    print(response_data)
+
     return JSONResponse(content=response_data)
