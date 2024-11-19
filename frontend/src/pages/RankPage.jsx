@@ -263,6 +263,39 @@ export default function RankPage() {
                                                             <span className="font-medium text-gray-600">Degree Score</span>
                                                             <span className="text-gray-900">{fileData.degree_score}</span>
                                                         </div>
+                                                        <div className="mt-6">
+                                                            <h2 className="text-xl font-bold text-gray-800 mb-4">Summary</h2>
+                                                            <div className="space-y-4">
+                                                                <div>
+                                                                    <h3 className="font-semibold text-gray-700">Extracted Skills</h3>
+                                                                    <p className="text-gray-600">{fileData.info.SKILLS.join(', ')}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <h3 className="font-semibold text-gray-700">Soft Skills</h3>
+                                                                    <p className="text-gray-600">
+                                                                        {fileData.info["Soft Skills"].length > 0
+                                                                            ? fileData.info["Soft Skills"].join(', ')
+                                                                            : "Not provided"}
+                                                                    </p>
+                                                                </div>
+                                                                <div>
+                                                                    <h3 className="font-semibold text-gray-700">Degree</h3>
+                                                                    <p className="text-gray-600">
+                                                                        {fileData.info.Degree.length > 0
+                                                                            ? fileData.info.Degree.join(', ')
+                                                                            : "Not provided"}
+                                                                    </p>
+                                                                </div>
+                                                                <div>
+                                                                    <h3 className="font-semibold text-gray-700">Major</h3>
+                                                                    <p className="text-gray-600">
+                                                                        {fileData.info.Major.length > 0
+                                                                            ? fileData.info.Major.join(', ')
+                                                                            : "Not provided"}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             )

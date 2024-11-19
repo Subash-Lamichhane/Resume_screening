@@ -8,7 +8,7 @@ from test import get_cosine_similarity  # Assuming this is your similarity funct
 from PyPDF2 import PdfReader
 from io import BytesIO
 from fastapi.middleware.cors import CORSMiddleware
-from extractInformation import extractInformation
+from extractInformation import extractInformation   
 from model.skillScore import get_skills_score
 from model.degreeScore import calculate_degree_score
 app = FastAPI()
@@ -104,6 +104,7 @@ async def upload_resume(
                     else float(degree_score_result) if isinstance(degree_score_result, (float, int))
                     else degree_score_result
                 ),
+                "info":info,
             }
 
         except Exception as e:
