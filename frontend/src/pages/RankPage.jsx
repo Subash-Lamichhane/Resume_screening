@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import FileIcon from '../images/fileIcon.png';
-import FileUpload from '../components/Screener/FileUpload'; 
+import FileUpload from '../components/Screener/FileUpload';
 
 export default function RankPage() {
     const [jobTitle, setJobTitle] = useState('');
@@ -230,9 +230,44 @@ export default function RankPage() {
                                 >
                                     <strong>{fileName}</strong>
                                     <div className="text-sm text-gray-700">
-                                        {fileData.error
-                                            ? <span className="text-red-500">Error: {fileData.error}</span>
-                                            : `Score: ${fileData.cosine_similarity_score}`}
+                                        {
+                                            fileData.error ? (
+                                                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                                                    <strong className="font-bold">Error:</strong> {fileData.error}
+                                                </div>
+                                            ) : (
+                                                <div className="bg-white rounded-lg p-6">
+                                                    {/* Header with total score */}
+                                                    <div className="text-center mb-4">
+                                                        <div className="text-2xl font-bold text-gray-800">
+                                                            Score: {(
+                                                                (parseFloat(fileData.cosine_similarity_score) +
+                                                                    parseFloat(fileData.skills_score) +
+                                                                    parseFloat(fileData.degree_score)) /
+                                                                3
+                                                            ).toFixed(2)}
+                                                        </div>
+                                                        <div className="text-sm text-gray-500">Overall Average Score</div>
+                                                    </div>
+                                                    {/* Individual Scores */}
+                                                    <div className="space-y-4">
+                                                        <div className="flex justify-between items-center border-b pb-2">
+                                                            <span className="font-medium text-gray-600">Description Match Score</span>
+                                                            <span className="text-gray-900">{fileData.cosine_similarity_score}</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center border-b pb-2">
+                                                            <span className="font-medium text-gray-600">Skill Score</span>
+                                                            <span className="text-gray-900">{fileData.skills_score}</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center border-b pb-2">
+                                                            <span className="font-medium text-gray-600">Degree Score</span>
+                                                            <span className="text-gray-900">{fileData.degree_score}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
+
                                     </div>
                                 </li>
                             ))}

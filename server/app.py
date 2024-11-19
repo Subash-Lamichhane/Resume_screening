@@ -3,12 +3,16 @@ from typing import List
 import json
 import os
 from fastapi.responses import JSONResponse
+from numpy import ndarray
 from test import get_cosine_similarity  # Assuming this is your similarity function
 from PyPDF2 import PdfReader
 from io import BytesIO
 from fastapi.middleware.cors import CORSMiddleware
-
+from extractInformation import extractInformation
+from model.skillScore import get_skills_score
+from model.degreeScore import calculate_degree_score
 app = FastAPI()
+import pandas as pd
 
 # Enable CORS for communication between the frontend and backend
 app.add_middleware(
@@ -60,7 +64,47 @@ async def upload_resume(
 
             # Calculate cosine similarity
             score = get_cosine_similarity(jobDescription, text)
-            results[file.filename] = {"cosine_similarity_score": float(score)}
+
+            # Extract information from the resume
+            info = extractInformation(text)
+
+            # Convert extracted SKILLS into a format suitable for processing
+            df_resume = pd.DataFrame({
+                "SKILLS": [", ".join(info["SKILLS"])]  # Combine skills into a single comma-separated string
+            })
+
+            # Calculate skills score
+            skills_score_result = get_skills_score(df_resume, {
+                "jobTitle": jobTitle,
+                "jobDescription": jobDescription,
+                "degree": degree,
+                "major": major,
+                "experience": experience,
+                "skills": ", ".join(skills_list)  # Convert list of skills to comma-separated string
+            })
+
+            # Calculate degree score
+            degree_score_result = calculate_degree_score(info["Degree"], degree)
+
+            # Print debugging information
+            print("Information: ", info)
+            print("Skill score: ", skills_score_result)
+            print("Degree score: ", degree_score_result)
+
+            # Add results for this file
+            results[file.filename] = {
+                "cosine_similarity_score": float(score),
+                "skills_score": (
+                    skills_score_result.tolist() if isinstance(skills_score_result, ndarray)
+                    else float(skills_score_result) if isinstance(skills_score_result, (float, int))
+                    else skills_score_result
+                ),
+                "degree_score": (
+                    degree_score_result.tolist() if isinstance(degree_score_result, ndarray)
+                    else float(degree_score_result) if isinstance(degree_score_result, (float, int))
+                    else degree_score_result
+                ),
+            }
 
         except Exception as e:
             results[file.filename] = {"error": str(e)}
