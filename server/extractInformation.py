@@ -102,7 +102,7 @@ def extractInformation(text, minExp):
     # Combine all extracted information into a dictionary
     extracted_info = {
         "SKILLS": skills,
-        "Soft Skills": soft_skills,
+        "SoftSkills": soft_skills,
         "Degree": degree,
         "Major": major,
         "Exp_Year": experience_years,

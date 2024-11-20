@@ -10,6 +10,7 @@ from io import BytesIO
 from fastapi.middleware.cors import CORSMiddleware
 from extractInformation import extractInformation   
 from model.skillScore import get_skills_score
+from model.softSkillScore import get_soft_skills_score
 from model.degreeScore import calculate_degree_score
 app = FastAPI()
 import pandas as pd
@@ -35,11 +36,13 @@ async def upload_resume(
     major: str = Form(...),
     experience: str = Form(...),
     skills: str = Form(...),  # Skills will be sent as a JSON string
+    softSkills: str = Form(...),
     files: List[UploadFile] = File(...),  # Handling multiple files
 ):
     try:
         # Parse the skills string as a JSON array
         skills_list = json.loads(skills)
+        soft_skills_list = json.loads(softSkills)
     except json.JSONDecodeError:
         return JSONResponse(
             status_code=400,
@@ -70,7 +73,8 @@ async def upload_resume(
 
             # Convert extracted SKILLS into a format suitable for processing
             df_resume = pd.DataFrame({
-                "SKILLS": [", ".join(info["SKILLS"])]  # Combine skills into a single comma-separated string
+                "SKILLS": [", ".join(info["SKILLS"])], # Combine skills into a single comma-separated string
+                "SoftSkills": [", ".join(info["SoftSkills"])]  
             })
 
             # Calculate skills score
@@ -83,6 +87,9 @@ async def upload_resume(
                 "skills": ", ".join(skills_list)  # Convert list of skills to comma-separated string
             })
 
+            soft_skill_score_result = get_soft_skills_score(df_resume,{
+                "softSkills": ", ".join(soft_skills_list)  # Convert list of skills to comma-separated string
+            })
             # Calculate degree score
             degree_score_result = calculate_degree_score(info["Degree"], degree)
 
@@ -91,11 +98,13 @@ async def upload_resume(
 
 
             # Print debugging information
+            print("Soft skill score=",soft_skill_score_result)
             print("Information: ", info)
             print("Skill score: ", skills_score_result)
             print("Degree score: ", exp_score_result)
             print("Experience score: ", exp_score_result)
 
+            skills_score_result =  float(skills_score_result)*0.8+ float(soft_skill_score_result)*0.2
 
             # Add results for this file
             results[file.filename] = {
@@ -110,6 +119,7 @@ async def upload_resume(
                     else float(degree_score_result) if isinstance(degree_score_result, (float, int))
                     else degree_score_result
                 ),
+                "exp_score":exp_score_result,
                 "info":info,
             }
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import FileIcon from '../images/fileIcon.png';
 import FileUpload from '../components/Screener/FileUpload';
+import ResumeResultsTable from '../components/Rank/ResumeRankTable';
 
 export default function RankPage() {
     const [jobTitle, setJobTitle] = useState('');
@@ -9,11 +10,13 @@ export default function RankPage() {
     const [degree, setDegree] = useState('');
     const [major, setMajor] = useState('');
     const [skills, setSkills] = useState([]);
+    const [softskills, setSoftSkills] = useState([]);
     const [experience, setExperience] = useState('');
     const [skillInput, setSkillInput] = useState('');
+    const [softskillsInput, setSoftSkillsInput] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
-    const [results, setResults] = useState([]); // Store ranked results here
-    const [loading, setLoading] = useState(false); // Loading indicator
+    const [results, setResults] = useState([]); 
+    const [loading, setLoading] = useState(false); 
 
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
@@ -31,6 +34,18 @@ export default function RankPage() {
         setSkills(skills.filter(skill => skill !== skillToRemove));
     };
 
+    // Add this handler function
+    const handleSoftSkillAdd = () => {
+        if (softskillsInput && !softskills.includes(softskillsInput)) {
+            setSoftSkills([...softskills, softskillsInput]);
+            setSoftSkillsInput('');
+        }
+    };
+
+    // Add this handler function
+    const handleSoftSkillRemove = (skillToRemove) => {
+        setSoftSkills(softskills.filter(skill => skill !== skillToRemove));
+    };
     const handleSubmit = async () => {
         const formData = new FormData();
 
@@ -41,6 +56,7 @@ export default function RankPage() {
         formData.append('major', major);
         formData.append('experience', experience);
         formData.append('skills', JSON.stringify(skills));
+        formData.append('softSkills', JSON.stringify(softskills));
 
         // Append files to FormData
         selectedFiles.forEach((file) => {
@@ -170,6 +186,47 @@ export default function RankPage() {
                         </div>
                     </div>
 
+                    <div className="mb-4">
+                        <label className="block text-lg font-medium mb-2">Soft Skills</label>
+                        <div className="flex space-x-2">
+                            <input
+                                type="text"
+                                className="w-full p-2 rounded border border-gray-300"
+                                value={softskillsInput}
+                                onChange={(e) => setSoftSkillsInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && softSkillsInput.trim() !== '') {
+                                        e.preventDefault();
+                                        handleSoftSkillAdd();
+                                    }
+                                }}
+                                placeholder="Type a soft skill and press Add"
+                            />
+                            <button
+                                onClick={handleSoftSkillAdd}
+                                className="bg-blue-500 text-white px-4 py-2 rounded"
+                            >
+                                Add
+                            </button>
+                        </div>
+                        <div className="mt-2 flex flex-wrap">
+                            {softskills.map((skill, index) => (
+                                <span
+                                    key={index}
+                                    className="bg-gray-200 text-gray-700 p-2 rounded mr-2 mb-2 flex items-center space-x-1"
+                                >
+                                    {skill}
+                                    <button
+                                        onClick={() => handleSoftSkillRemove(skill)}
+                                        className="text-red-400 font-bold ml-2"
+                                    >
+                                        X
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
                     {/* Experience in Years */}
                     <div className="mb-4">
                         <label className="block text-lg font-medium mb-2">Experience (Years)</label>
@@ -219,95 +276,8 @@ export default function RankPage() {
                         </button>
                     </div>
                 </div>
-                {results && (
-                    <div className="results-section mt-6 bg-white shadow-lg p-6 rounded-lg max-w-xl mx-auto">
-                        <h2 className="text-2xl font-bold text-center mb-4">Resume Results</h2>
-                        <ul>
-                            {Object.entries(results).map(([fileName, fileData], index) => (
-                                <li
-                                    key={index}
-                                    className="border-b last:border-b-0 py-2"
-                                >
-                                    <strong>{fileName}</strong>
-                                    <div className="text-sm text-gray-700">
-                                        {
-                                            fileData.error ? (
-                                                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                                                    <strong className="font-bold">Error:</strong> {fileData.error}
-                                                </div>
-                                            ) : (
-                                                <div className="bg-white rounded-lg p-6">
-                                                    {/* Header with total score */}
-                                                    <div className="text-center mb-4">
-                                                        <div className="text-2xl font-bold text-gray-800">
-                                                            Score: {(
-                                                                (parseFloat(fileData.cosine_similarity_score) +
-                                                                    parseFloat(fileData.skills_score) +
-                                                                    parseFloat(fileData.degree_score)) /
-                                                                3
-                                                            ).toFixed(2)}
-                                                        </div>
-                                                        <div className="text-sm text-gray-500">Overall Average Score</div>
-                                                    </div>
-                                                    {/* Individual Scores */}
-                                                    <div className="space-y-4">
-                                                        <div className="flex justify-between items-center border-b pb-2">
-                                                            <span className="font-medium text-gray-600">Description Match Score</span>
-                                                            <span className="text-gray-900">{fileData.cosine_similarity_score}</span>
-                                                        </div>
-                                                        <div className="flex justify-between items-center border-b pb-2">
-                                                            <span className="font-medium text-gray-600">Skill Score</span>
-                                                            <span className="text-gray-900">{fileData.skills_score}</span>
-                                                        </div>
-                                                        <div className="flex justify-between items-center border-b pb-2">
-                                                            <span className="font-medium text-gray-600">Degree Score</span>
-                                                            <span className="text-gray-900">{fileData.degree_score}</span>
-                                                        </div>
-                                                        <div className="mt-6">
-                                                            <h2 className="text-xl font-bold text-gray-800 mb-4">Summary</h2>
-                                                            <div className="space-y-4">
-                                                                <div>
-                                                                    <h3 className="font-semibold text-gray-700">Extracted Skills</h3>
-                                                                    <p className="text-gray-600">{fileData.info.SKILLS.join(', ')}</p>
-                                                                </div>
-                                                                <div>
-                                                                    <h3 className="font-semibold text-gray-700">Soft Skills</h3>
-                                                                    <p className="text-gray-600">
-                                                                        {fileData.info["Soft Skills"].length > 0
-                                                                            ? fileData.info["Soft Skills"].join(', ')
-                                                                            : "Not provided"}
-                                                                    </p>
-                                                                </div>
-                                                                <div>
-                                                                    <h3 className="font-semibold text-gray-700">Degree</h3>
-                                                                    <p className="text-gray-600">
-                                                                        {fileData.info.Degree.length > 0
-                                                                            ? fileData.info.Degree.join(', ')
-                                                                            : "Not provided"}
-                                                                    </p>
-                                                                </div>
-                                                                <div>
-                                                                    <h3 className="font-semibold text-gray-700">Major</h3>
-                                                                    <p className="text-gray-600">
-                                                                        {fileData.info.Major.length > 0
-                                                                            ? fileData.info.Major.join(', ')
-                                                                            : "Not provided"}
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )
-                                        }
-
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
             </div>
+            {results && <ResumeResultsTable results={results} />}
         </div>
     );
 }
