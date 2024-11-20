@@ -66,7 +66,7 @@ async def upload_resume(
             score = get_cosine_similarity(jobDescription, text)
 
             # Extract information from the resume
-            info = extractInformation(text)
+            info = extractInformation(text, experience)
 
             # Convert extracted SKILLS into a format suitable for processing
             df_resume = pd.DataFrame({
@@ -86,10 +86,16 @@ async def upload_resume(
             # Calculate degree score
             degree_score_result = calculate_degree_score(info["Degree"], degree)
 
+            # Calculate experience score
+            exp_score_result = info["Exp_Score"]
+
+
             # Print debugging information
             print("Information: ", info)
             print("Skill score: ", skills_score_result)
-            print("Degree score: ", degree_score_result)
+            print("Degree score: ", exp_score_result)
+            print("Experience score: ", exp_score_result)
+
 
             # Add results for this file
             results[file.filename] = {

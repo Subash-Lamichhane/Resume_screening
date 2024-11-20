@@ -2272,3 +2272,5 @@
 {"label": "SOFT_SKILL", "pattern": [{"LOWER": "positivity"}]} 
 {"label": "SOFT_SKILL", "pattern": [{"LOWER": "open mindedness"}]} 
 {"label": "SOFT_SKILL", "pattern": [{"LOWER": "team building"}]}
+
+
