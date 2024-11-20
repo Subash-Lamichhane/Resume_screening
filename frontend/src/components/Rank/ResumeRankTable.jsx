@@ -110,7 +110,7 @@ const ResumeResultsTable = ({ results }) => {
                         </p>
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-700 mb-2">Major</h3>
+                        <h3 className="font-semibold text-gray-700 mb-2">Education</h3>
                         <p className="text-gray-600">
                           {fileData.info.Major.length > 0
                             ? fileData.info.Major.join(', ')

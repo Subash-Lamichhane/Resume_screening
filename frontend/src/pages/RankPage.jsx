@@ -133,7 +133,7 @@ export default function RankPage() {
                         </div>
                         {/* Major */}
                         <div className="mb-4 flex-grow">
-                            <label className="block text-lg font-medium mb-2">Major</label>
+                            <label className="block text-lg font-medium mb-2">Education</label>
                             <input
                                 type="text"
                                 className="w-full p-2 rounded border border-gray-300"
@@ -195,7 +195,7 @@ export default function RankPage() {
                                 value={softskillsInput}
                                 onChange={(e) => setSoftSkillsInput(e.target.value)}
                                 onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && softSkillsInput.trim() !== '') {
+                                    if (e.key === 'Enter' && softskillsInput.trim() !== '') {
                                         e.preventDefault();
                                         handleSoftSkillAdd();
                                     }
