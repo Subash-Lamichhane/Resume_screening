@@ -272,7 +272,7 @@ export default function RankPage() {
                             className="bg-green-500 text-white px-6 py-3 rounded-lg"
                             onClick={handleSubmit}
                         >
-                            {loading ? 'Ranking...' : 'Rank Resume'}
+                            {loading ? 'Screening...' : 'Screen Resume'}
                         </button>
                     </div>
                 </div>

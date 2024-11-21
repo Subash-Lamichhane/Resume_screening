@@ -1,7 +1,7 @@
 import spacy
 import re
-from dateutil import parser
-from dateutil.relativedelta import relativedelta
+# from dateutil import parser
+# from dateutil.relativedelta import relativedelta
 from datetime import datetime
 from model.experienceScore import get_experience_score
 

@@ -3,7 +3,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 
 const ResumeResultsTable = ({ results }) => {
   const [expandedRows, setExpandedRows] = useState(new Set());
-
+  // console.log(results)
   const toggleRow = (fileName) => {
     const newExpanded = new Set(expandedRows);
     if (newExpanded.has(fileName)) {
@@ -31,7 +31,7 @@ const ResumeResultsTable = ({ results }) => {
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Overall Score</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description Match</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Skill Score</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Degree Score</th>
+            {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Degree Score</th> */}
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Education Score</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience Score</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -57,11 +57,11 @@ const ResumeResultsTable = ({ results }) => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {fileData.skills_score}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {fileData.degree_score}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {fileData.education_score}
+                      {(fileData.education_score+fileData.degree_score)/2}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {fileData.exp_score}
@@ -90,7 +90,16 @@ const ResumeResultsTable = ({ results }) => {
               {expandedRows.has(fileName) && !fileData.error && (
                 <tr className="bg-gray-50">
                   <td colSpan={6} className="px-6 py-4">
+                    <div>
+                      <h3 className="font-semibold text-gray-700 mb-2">Email:</h3>
+                      <p className="text-gray-600">{fileData.info.Email}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-700 mb-2">Phone No:</h3>
+                      <p className="text-gray-600">{fileData.info.Phone_No}</p>
+                    </div>
                     <div className="grid grid-cols-2 gap-4">
+
                       <div>
                         <h3 className="font-semibold text-gray-700 mb-2">Skills</h3>
                         <p className="text-gray-600">{fileData.info.SKILLS.join(', ')}</p>
