@@ -12,6 +12,7 @@ from extractInformation import extractInformation
 from model.skillScore import get_skills_score
 from model.softSkillScore import get_soft_skills_score
 from model.degreeScore import calculate_degree_score
+from model.majorScore import get_education_score
 app = FastAPI()
 import pandas as pd
 
@@ -43,6 +44,7 @@ async def upload_resume(
         # Parse the skills string as a JSON array
         skills_list = json.loads(skills)
         soft_skills_list = json.loads(softSkills)
+        # major_list = json.loads(major)
     except json.JSONDecodeError:
         return JSONResponse(
             status_code=400,
@@ -74,7 +76,8 @@ async def upload_resume(
             # Convert extracted SKILLS into a format suitable for processing
             df_resume = pd.DataFrame({
                 "SKILLS": [", ".join(info["SKILLS"])], # Combine skills into a single comma-separated string
-                "SoftSkills": [", ".join(info["SoftSkills"])]  
+                "SoftSkills": [", ".join(info["SoftSkills"])]  ,
+                "major": [", ".join(info["Major"])]
             })
 
             # Calculate skills score
@@ -90,6 +93,12 @@ async def upload_resume(
             soft_skill_score_result = get_soft_skills_score(df_resume,{
                 "softSkills": ", ".join(soft_skills_list)  # Convert list of skills to comma-separated string
             })
+            print("skillsssssssssssss",skills_list)
+            print("majorrrrrrrrrrrrrrr",[major]   )
+
+            major_score_result = get_education_score(df_resume,{
+                "education_major": ", ".join([major])  # Convert list of skills to comma-separated string
+            })
             # Calculate degree score
             degree_score_result = calculate_degree_score(info["Degree"], degree)
 
@@ -103,9 +112,10 @@ async def upload_resume(
             print("Skill score: ", skills_score_result)
             print("Degree score: ", exp_score_result)
             print("Experience score: ", exp_score_result)
+            print("Education score: ", major_score_result)
 
             skills_score_result =  float(skills_score_result)*0.8+ float(soft_skill_score_result)*0.2
-
+            final_score = float(skills_score_result)*0.25+ float(soft_skill_score_result)*0.1+ float(degree_score_result)*0.1 + float(major_score_result)*0.1+ float(score)*0.3+ float(exp_score_result)*0.15
             # Add results for this file
             results[file.filename] = {
                 "cosine_similarity_score": float(score),
@@ -119,8 +129,14 @@ async def upload_resume(
                     else float(degree_score_result) if isinstance(degree_score_result, (float, int))
                     else degree_score_result
                 ),
+                "education_score":(
+                    major_score_result.tolist() if isinstance(major_score_result, ndarray)
+                    else float(major_score_result) if isinstance(major_score_result, (float, int))
+                    else major_score_result
+                ),
                 "exp_score":exp_score_result,
                 "info":info,
+                "final_score":final_score,
             }
 
         except Exception as e:
