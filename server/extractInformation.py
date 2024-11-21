@@ -1,4 +1,5 @@
 import spacy
+import re
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
@@ -19,6 +20,49 @@ def get_skills(text):
             subset.append(ent.text)
     myset.append(subset)
     return list(set(subset))
+
+def get_email(text):
+    """Extract email addresses using regular expression."""
+    email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+    emails =  re.findall(email_pattern, text)
+    if not emails:
+        return 'Not found'
+    else:
+        return emails[0]
+
+def get_phone_number(text):
+    """Extract phone numbers from a variety of countries using regular expressions."""
+    # Define a more general phone number pattern
+    phone_pattern = r'''(?:
+        (?:(?:\+|00)\d{1,3})?       # Optional international prefix with country code (e.g., +1, +44, 00-33)
+        [\s.-]?                      # Optional separator (space, dot, or hyphen)
+        (?:\(?\d{1,4}\)?[\s.-]?)?    # Optional area code (may be in parentheses)
+        \d{1,4}                      # First part of the local number
+        [\s.-]?                      # Optional separator (space, dot, or hyphen)
+        \d{1,4}                      # Second part of the local number
+        [\s.-]?                      # Optional separator
+        \d{1,4}                      # Optional third part of the local number (if present)
+    )'''
+
+    # Find all matches using the regex pattern
+    matches = re.finditer(phone_pattern, text, re.VERBOSE | re.MULTILINE)
+
+    # Extract and clean the matched phone numbers
+    phone_numbers = []
+    for match in matches:
+        # Get the full matched phone number
+        number = match.group().strip()
+        # Remove any leading/trailing separators and clean up internal spaces
+        number = ' '.join(number.split())
+        # Only add if it's a valid number (contains at least 10 digits)
+        if sum(c.isdigit() for c in number) >= 10:
+            phone_numbers.append(number)
+
+    if not phone_numbers:
+        return 'Not found'
+    else:
+        return phone_numbers[0]
+
 
 def get_soft_skills(text):
     doc = nlp(text)
@@ -91,12 +135,20 @@ def get_experience(text, minExp):
 
 
 
+
+
 def extractInformation(text, minExp):
     skills = get_skills(text)
     soft_skills = get_soft_skills(text)
     degree = get_degrees(text)
     major = get_major(text)
+    email = get_email(text)
+    phone_no = get_phone_number(text)
     (experience_years, experience_score) = get_experience(text, minExp)
+    print("Email")
+    print(email)
+    print("Phone number")
+    print(phone_no)
     # print(year)
     
     # Combine all extracted information into a dictionary
@@ -106,7 +158,9 @@ def extractInformation(text, minExp):
         "Degree": degree,
         "Major": major,
         "Exp_Year": experience_years,
-        "Exp_Score": experience_score
+        "Exp_Score": experience_score,
+        "Email": email,
+        "Phone_No": phone_no
     }
     
     return extracted_info
