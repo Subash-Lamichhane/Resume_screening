@@ -61,7 +61,7 @@ const ResumeResultsTable = ({ results }) => {
                       {fileData.degree_score}
                     </td> */}
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {(fileData.education_score+fileData.degree_score)/2}
+                      {fileData.education_score}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {fileData.exp_score}
