@@ -37,11 +37,11 @@ ResuMatch is an advanced automated resume screening system that leverages artifi
 
 ## Installation
 
-*Detailed installation instructions will be added to the actual repository*
+*To be updated*
 
 ## Usage
 
-*Specific usage instructions to be provided in the actual repository*
+*To be updated*
 
 ## Limitations
 
