@@ -21,10 +21,10 @@ ResuMatch is an advanced automated resume screening system that leverages artifi
 - **Frontend**: React
 - **Backend**: FastAPI
 - **NLP Library**: spaCy
-- **Machine Learning**: 
+- **Machine Learning**:
   - Sentence Transformers
   - Named Entity Recognition (NER)
-- **Text Processing**: 
+- **Text Processing**:
   - Cosine Similarity
   - TF-IDF Vectorization
 
@@ -37,11 +37,95 @@ ResuMatch is an advanced automated resume screening system that leverages artifi
 
 ## Installation
 
-*To be updated*
+### Prerequisites
+
+- **Frontend**:
+  - Node.js (with Yarn)
+- **Backend**:
+  - Python 3.7+
+  - FastAPI
+  - Uvicorn
+
+### Step 1: Clone the Repository
+
+```bash
+git clone <repository-url>
+cd ResuMatch
+```
+
+### Step 2: Frontend Setup
+
+1. Navigate to the `frontend` directory:
+
+    ```bash
+    cd frontend
+    ```
+
+2. Install dependencies:
+
+    ```bash
+    yarn install
+    ```
+
+3. Start the development server:
+
+    ```bash
+    yarn run dev
+    ```
+
+### Step 3: Backend Server Setup
+
+1. Navigate to the `server` directory:
+
+    ```bash
+    cd server
+    ```
+
+2. Create a virtual environment:
+
+    ```bash
+    python3 -m venv env
+    ```
+
+3. Activate the virtual environment:
+
+    - On Windows:
+
+      ```bash
+      .\env\Scripts\activate
+      ```
+
+    - On macOS/Linux:
+
+      ```bash
+      source env/bin/activate
+      ```
+
+4. Install dependencies:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5. Run the FastAPI server:
+
+    ```bash
+    uvicorn app:app --reload
+    ```
 
 ## Usage
 
-*To be updated*
+1. Open the **Frontend**:
+   - Navigate to `http://localhost:3000` in your browser (assuming the frontend is running).
+
+2. Upload Resumes:
+   - Use the provided UI to upload one or more resumes.
+
+3. Specify Job Description:
+   - Input or upload the desired job description for matching.
+
+4. View Results:
+   - The system will process the resumes and job description, returning a ranked list of resumes based on their compatibility scores.
 
 ## Limitations
 
@@ -62,8 +146,6 @@ ResuMatch is an advanced automated resume screening system that leverages artifi
 - Subash Lamichhane
 - Sujan Koirala
 
-
 ## Acknowledgments
 
 Special thanks to Samsung Innovation Campus (SIC) for the opportunity to develop this project.
-
