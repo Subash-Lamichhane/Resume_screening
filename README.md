@@ -139,6 +139,18 @@ cd ResuMatch
 - Advanced NLP models for contextual understanding
 - Semantic search capabilities
 - Dynamic scoring mechanisms
+  
+## Screenshots:
+<details>
+  <summary>Click to view screenshots</summary>
+  
+  ![Screenshot 1](https://github.com/user-attachments/assets/97958152-3e0a-4c92-aca3-442e3bacb4a2)
+  
+  ![Screenshot 2](https://github.com/user-attachments/assets/4212c74e-30ab-4163-9fa6-d2809f08860d)
+
+</details>
+
+
 
 ## Contributors
 
